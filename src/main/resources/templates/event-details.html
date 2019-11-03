@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <th:block th:replace="fragments :: styleLinks" th:remove="tag"></th:block>
+    <meta charset="UTF-8">
+    <title th:text="${event.getName()}"></title>
+</head>
+<body>
+<th:block th:replace="fragments :: navigator" th:remove="tag"></th:block>
+
+<div class="content-container">
+
+<!--    <h1 th:text="${event.getName()}"></h1>-->
+<!--    <h5 th:text="'Created by ' + ${event.getEventOrganizer().getUsername()}"></h5>-->
+
+    <div class="alert alert-danger" th:if="${!event.isActive()}">
+        This event has already ended!
+    </div>
+
+<div class="row">
+    <div class="col-6">
+    <div class="card">
+<!--        <img class="card-img-top img-fluid" src="https://placehold.it/350x180" alt="Alternatywny opis obrazka">-->
+        <div class="card-header">
+            <h2 class="card-title" th:text="${event.getName()}"></h2>
+            <h6 class="card-subtitle text-muted" th:text="'Created by ' + ${event.getEventOrganizer().getUsername()}"></h6>
+            <p class="card-subtitle text-muted" th:if="${event.getGroup() != null}"
+                th:text="'for group ' + ${event.getGroup().getName()}"></p>
+        </div>
+        <div class="card-body">
+            <h4 class="card-text" th:text="${event.getDescription()}"></h4>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item" th:text="${event.getPlaceName() + ', ' + event.getPlaceAdress()}"></li>
+            <li class="list-group-item" th:text="'Start: ' + ${event.getStartDate().toLocalDate() + ', ' +event.getStartDate().toLocalTime()}"></li>
+            <li class="list-group-item" th:text="'End: ' + ${event.getEndDate().toLocalDate() + ', ' + event.getEndDate().toLocalTime()}"></li>
+            <li class="list-group-item" th:text="'Participants: ' + ${event.numberOfParticipants()}"></li>
+        </ul>
+        <div class="card-body" th:if="${event.getGroup()==null || event.getGroup().hasMembership(active_user)}">
+            <a th:href="@{'/invitation/ignore/event/' + ${event.getId()}}">
+                <button type="button" class="btn btn-outline-danger"
+                        th:disabled="${!event.hasParticipation(active_user)}"> Resign
+                </button>
+            </a>
+            <a th:href="@{'/event/join/' + ${event.getId()}}" >
+                <button type="button" class="btn btn-outline-success"
+                        th:disabled="${event.hasParticipation(active_user)}"> Join
+                </button>
+            </a>
+
+        </div>
+    </div>
+    </div>
+    <div class="col-6">
+
+    <div class="card">
+        <div class="card-header">
+            <h2>Comments</h2>
+        </div>
+        <div class="card-body">
+            <a th:href="@{'/comment/'+${event.getId()}} ">
+                <button class="btn btn-outline-info col-6" th:disabled="${!event.hasParticipation(active_user)}"
+                        th:text="${event.hasParticipation(active_user)? 'Comment' : 'Join Event to comment'}"></button>
+            </a>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item" th:each="comment : ${event.getComments()}">
+                <div class="blockquote" th:text="${comment.getContent()}"></div>
+                <span sec:authorize="!hasRole('ADMIN')"
+                     th:if="${comment.getParticipation().getAccount().getUsername().equals(active_user) || event.getEventOrganizer().getUsername().equals(active_user)}">
+                    <a th:href="@{'/comment/'+ ${event.getId()} + '/delete/' + ${comment.getId()}}">
+                        <button class="btn btn-outline-danger">Delete</button>
+                    </a>
+                </span>
+                <span sec:authorize="hasRole('ADMIN')">
+                    <a th:href="@{'/comment/'+ ${event.getId()} + '/delete/' + ${comment.getId()}}">
+                        <button class="btn btn-outline-danger">Delete</button>
+                    </a>
+                </span>
+                <span
+                     th:if="${comment.getParticipation().getAccount().getUsername().equals(active_user)}">
+                    <a th:href="@{'/comment/'+ ${event.getId()} + '/edit/' + ${comment.getId()}}">
+                        <button class="btn btn-outline-primary">Edit</button>
+                    </a>
+                </span>
+
+                <div class="blockquote-footer"
+                     th:text="${comment.getParticipation().getAccount().getUsername()} + '   ' + ${comment.additionDateToString()}">
+                </div>
+
+            </li>
+        </ul>
+    </div>
+    </div>
+</div>
+
+</div>
+
+
+
+
+
+    <!--<div class="row col -12" th:text="${event.getDescription()}"></div>
+    <div class="row col-8">
+        <div class="col-2"> Place:</div>
+        <div class="col-5" th:text="${event.getPlaceName()}"></div>
+        <div class="col-5" th:text="${event.getPlaceAdress()}"></div>
+    </div>
+    <div class="row col-8">
+        <div class="col-6" th:text="'Start: ' + ${event.getStartDate().toLocalDate()}"></div>
+        <div class="col-6" th:text=" ${event.getStartDate().toLocalTime()}"></div>
+    </div>
+    <div class="row col-8">
+        <div class="col-6" th:text="'End: ' + ${event.getEndDate().toLocalDate()}"></div>
+        <div class="col-6" th:text="${event.getEndDate().toLocalTime()} "></div>
+    </div>-->
+
+
+   <!-- <div class="row col-8">
+        <div class="col-6" th:text="'Participants: ' + ${event.numberOfParticipants()}"></div>
+        <div th:if="${!event.getEventOrganizer().getUsername().equals(active_user) && event.isActive()}"
+             class="col-6">
+            <a th:href="@{'/event/join/' + ${event.getId()}}">
+                <button type="button" class="btn btn-outline-success"
+                        th:disabled="${event.hasParticipation(active_user)}"> Join
+                </button>
+            </a>
+        </div>
+    </div>-->
+
+   <!-- <div>
+        <a th:href="@{'/comment/'+${event.getId()}} ">
+            <button class="btn btn-outline-info col-6" th:disabled="${!event.hasParticipation(active_user)}"
+            th:text="${event.hasParticipation(active_user)? 'Comment' : 'Join Event to comment'}"></button>
+        </a>
+    </div>
+
+    <h1>Comments</h1>
+    <div class="row col-8" th:each="comment : ${event.getComments()}">
+        <div class="row col-12">
+            <div class="col-8 blockquote" th:text="${comment.getContent()}"></div>
+            <div class="col-2" sec:authorize="!hasRole('ADMIN')"
+                 th:if="${comment.getParticipation().getAccount().getUsername().equals(active_user) || event.getEventOrganizer().getUsername().equals(active_user)}">
+                <a th:href="@{'/comment/'+ ${event.getId()} + '/delete/' + ${comment.getId()}}">
+                    <button class="btn btn-outline-danger">Delete</button>
+                </a>
+            </div>
+            <div class="col-2" sec:authorize="hasRole('ADMIN')">
+                <a th:href="@{'/comment/'+ ${event.getId()} + '/delete/' + ${comment.getId()}}">
+                    <button class="btn btn-outline-danger">Delete</button>
+                </a>
+            </div>
+            <div class="col-2"
+                 th:if="${comment.getParticipation().getAccount().getUsername().equals(active_user)}">
+                <a th:href="@{'/comment/'+ ${event.getId()} + '/edit/' + ${comment.getId()}}">
+                    <button class="btn btn-outline-primary">Edit</button>
+                </a>
+            </div>
+
+            <div class="blockquote-footer row col-12"
+                 th:text="${comment.getParticipation().getAccount().getUsername()} + '   ' + ${comment.additionDateToString()}">
+            </div>
+        </div>
+
+    </div>
+</div>-->
+
+<th:block th:replace="fragments :: footer" th:remove="tag"></th:block>
+<th:block th:replace="fragments :: jsScripts" th:remove="tag"></th:block>
+</body>
+</html>

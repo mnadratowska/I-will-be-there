@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <th:block th:replace="fragments :: styleLinks" th:remove="tag"></th:block>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<th:block th:replace="fragments :: navigator" th:remove="tag"></th:block>
+
+<div class="content-container">
+    <div class="row col-md-12">
+        <div class="col-6"><h1>Event list</h1></div>
+        <div class="col-3"><a th:href="@{/event/list}">
+            <button class="btn btn-outline-success col-12">Active events</button>
+        </a></div>
+        <div class="col-3"><a th:href="@{/event/list/past}">
+            <button class="btn btn-outline-success col-12">Past events</button>
+        </a></div>
+    </div>
+    <br>
+
+    <form th:action="@{/event/list/search}" method="post">
+        <div class="row col-6 offset-6">
+            <div class="col-8">
+                <input class="form-control" id="search" type="text" name="ename" placeholder="Search..."
+                       th:value="${event_name}">
+            </div>
+            <div class="col-4">
+                <input class="form-control" type="submit">
+            </div>
+        </div>
+    </form>
+</div>
+<div class="content-container">
+    <div class="row col-12 list-container">
+        <div class="row col-12 list-header-row">
+            <div class="row col-12 list-header-row">
+                <div class="col-2"> Event name</div>
+                <div class="col-2"> Place</div>
+                <div class="col-2"> Start</div>
+                <div class="col-2"> End</div>
+                <div class="col-4"></div>
+            </div>
+        </div>
+        <div th:each="event : ${events}" class="row col-12 list-row">
+            <div class="row col-12">
+                <div class="col-2" th:text="${event.getName()}"></div>
+                <div class="col-2" th:text="${event.getPlaceName()}"></div>
+                <div class="col-2">
+                    <div class="col-12" th:text="${event.getStartDate().toLocalDate()}"></div>
+                    <div class="col-12" th:text="${event.getStartDate().toLocalTime()}"></div>
+                </div>
+                <div class="col-2">
+                    <div class="col-12" th:text="${event.getEndDate().toLocalDate()}"></div>
+                    <div class="col-12" th:text="${event.getEndDate().toLocalTime()}"></div>
+                </div>
+
+                <div class="row col-4">
+                    <div class="col-4">
+                        <a th:href="@{'/event/details/'+ ${event.getId()}}">
+                            <button class="btn btn-outline-primary col-12">Details</button>
+                        </a>
+                    </div>
+                    <div class="col-4" th:disabled="${event.hasParticipation(active_user) || !event.isActive()}">
+                        <a th:href="@{'/event/join/'+ ${event.getId()}}">
+                            <button class="btn btn-outline-success col-12">Join</button>
+                        </a>
+                    </div>
+
+
+                    <div sec:authorize="hasRole('ADMIN')" class="col-4">
+                        <a th:href="@{'/event/delete/' + ${event.getId()}}">
+                            <button type="button" class="btn btn-outline-danger col-12">Remove</button>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="fragments :: footer" th:remove="tag"></th:block>
+<th:block th:replace="fragments :: jsScripts" th:remove="tag"></th:block>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <th:block th:replace="fragments :: styleLinks" th:remove="tag"></th:block>
+    <meta charset="UTF-8">
+    <title th:text="${group.getName()}"></title>
+</head>
+<body>
+<th:block th:replace="fragments :: navigator" th:remove="tag"></th:block>
+
+<div class="content-container">
+
+    <div class="row">
+        <div class="col-4">
+            <div class="card">
+                <!--        <img class="card-img-top img-fluid" src="https://placehold.it/350x180" alt="Alternatywny opis obrazka">-->
+                <div class="card-header">
+                    <h2 class="card-title" th:text="${group.getName()}"></h2>
+                    <h6 class="card-subtitle text-muted"
+                        th:text="'Created by ' + ${group.getGroupManager().getUsername()}"></h6>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item" th:text="'Members: ' + ${group.numberOfMembers()}"></li>
+                    <li class="list-group-item"
+                        th:text="'Active events: ' + ${group.getEventsByActive(true).size()}"></li>
+                    <li class="list-group-item" th:text="'All events: ' + ${group.getEvents().size()}"></li>
+                </ul>
+                <div class="card-body">
+                    <a th:href="@{'/invitation/ignore/group/' + ${group.getId()}}"
+                       th:if="${!group.getGroupManager().getUsername().equals(active_user)}">
+                        <button type="button" class="btn btn-outline-danger"
+                                th:disabled="${!group.hasMembership(active_user)}"> Resign
+                        </button>
+                    </a>
+                    <a th:href="@{'/group/join/' + ${group.getId()}}">
+                        <button type="button" class="btn btn-outline-success"
+                                th:disabled="${group.hasMembership(active_user)}"> Join
+                        </button>
+                    </a>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-8">
+
+            <div class="card text-center">
+                <div class="card-header">
+                    <h3>Events</h3>
+                    <div class="alert-info" th:if="${!group.hasMembership(active_user)}">
+                        You have to be group member to join events.
+                    </div>
+                    <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="actual-tab" data-toggle="tab" href="#actual" role="tab"
+                               aria-controls="actual" aria-selected="true">Actual </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="past-tab" data-toggle="tab" href="#past" role="tab"
+                               aria-controls="past" aria-selected="false"> Past</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="actual" role="tabpanel" aria-labelledby="actual-tab">
+                            <div class="row col-12 list-header-row" th:if="${group.getEventsByActive(true).size()>0}">
+                                <div class="row col-12 list-header-row">
+                                    <div class="col-2"> Event name</div>
+                                    <div class="col-2"> Place</div>
+                                    <div class="col-2"> Start</div>
+                                    <div class="col-2"> End</div>
+                                    <div class="col-4"></div>
+                                </div>
+                            </div>
+                            <div th:each="event : ${group.getEventsByActive(true)}" class="row col-12 list-row">
+                                <div class="row col-12">
+                                    <div class="col-4">
+                                        <a th:href="@{'/event/details/'+ ${event.getId()}}" th:text="${event.getName()}"></a>
+                                    </div>
+                                    <div class="col-2" th:text="${event.getPlaceName()}"></div>
+                                    <div class="col-2">
+                                        <div class="col-12" th:text="${event.getStartDate().toLocalDate()}"></div>
+                                        <div class="col-12" th:text="${event.getStartDate().toLocalTime()}"></div>
+                                    </div>
+                                    <div class="col-2">
+                                        <div class="col-12" th:text="${event.getEndDate().toLocalDate()}"></div>
+                                        <div class="col-12" th:text="${event.getEndDate().toLocalTime()}"></div>
+                                    </div>
+                                    <div class="col-2">
+                                        <a th:href="@{'/event/join/'+ ${event.getId()}}">
+                                            <button class="btn btn-outline-success"
+                                                    th:disabled="${event.hasParticipation(active_user) || !group.hasMembership(active_user)}">
+                                                Join
+                                            </button>
+                                        </a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="past" role="tabpanel" aria-labelledby="past-tab">
+                            <div class="row col-12 list-container">
+                                <div class="row col-12 list-header-row" th:if="${group.getEventsByActive(false).size()>0}">
+                                    <div class="row col-12 list-header-row">
+                                        <div class="col-2"> Event name</div>
+                                        <div class="col-2"> Place</div>
+                                        <div class="col-2"> Start</div>
+                                        <div class="col-2"> End</div>
+                                        <div class="col-4"></div>
+                                    </div>
+                                </div>
+                                <div th:each="event : ${group.getEventsByActive(false)}" class="row col-12 list-row">
+                                    <div class="row col-12">
+                                        <div class="col-4">
+                                            <a th:href="@{'/event/details/'+ ${event.getId()}}" th:text="${event.getName()}"></a>
+                                        </div>
+                                        <div class="col-2" th:text="${event.getPlaceName()}"></div>
+                                        <div class="col-2">
+                                            <div class="col-6" th:text="${event.getStartDate().toLocalDate()}"></div>
+                                            <div class="col-6" th:text="${event.getStartDate().toLocalTime()}"></div>
+                                        </div>
+                                        <div class="col-2">
+                                            <div class="col-6" th:text="${event.getEndDate().toLocalDate()}"></div>
+                                            <div class="col-6" th:text="${event.getEndDate().toLocalTime()}"></div>
+                                        </div>
+                                        <div class="col-2">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+<th:block th:replace="fragments :: footer" th:remove="tag"></th:block>
+<th:block th:replace="fragments :: jsScripts" th:remove="tag"></th:block>
+</body>
+</html>

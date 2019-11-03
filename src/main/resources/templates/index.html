@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <th:block th:replace="fragments :: styleLinks" th:remove="tag"></th:block>
+    <meta charset="UTF-8">
+    <title>I will be there</title>
+</head>
+<body>
+<th:block th:replace="fragments :: navigator" th:remove="tag"></th:block>
+<div sec:authorize="isAuthenticated()" class="content-container">
+    <div class="container">
+        <h1 th:text="'Hello ' + ${active_user}"></h1>
+        <br>
+        <div th:if="${event_invitations_number>0}" class="alert-info h4">
+            You have <span th:text="${event_invitations_number}"></span> event invitation(s).
+            <a th:href="@{/invitation/event}">see</a>
+        <br>
+        </div>
+        <div th:if="${group_invitations_number>0}" class="alert-info h4">
+            You have <span th:text="${group_invitations_number}"> </span> group invitation(s).
+            <a th:href="@{/invitation/group}">see</a>
+        <br>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3> Events </h3>
+                <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="actual-tab" data-toggle="tab" href="#actual" role="tab"
+                           aria-controls="actual" aria-selected="true">Actual <span class="badge badge-pill badge-light"
+                                                                                    th:text="${actual_now_events.size()}"></span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="upcomming-tab" data-toggle="tab" href="#upcomming" role="tab"
+                           aria-controls="upcomming" aria-selected="false">Upcomming
+                            <span class="badge badge-pill badge-light" th:text="${upcomming_events.size()}"></span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="past-tab" data-toggle="tab" href="#past" role="tab" aria-controls="past"
+                           aria-selected="false">Past <span class="badge badge-pill badge-light"
+                                                            th:text="${past_events.size()}"></span></a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="actual" role="tabpanel" aria-labelledby="actual-tab">
+                        <th:block th:replace="fragments :: eventlistHeader" th:remove="tag"></th:block>
+                        <div th:each="event : ${actual_now_events}" class="row col-12 list-row">
+                            <div class="row col-12">
+                                <div class="col-4">
+                                    <a th:href="@{'/event/details/'+ ${event.getId()}}"
+                                       th:text="${event.getName()}"></a>
+                                </div>
+                                <div class="col-2" th:text="${event.getPlaceName()}"></div>
+                                <div class="col-2">
+                                    <div class="col-12" th:text="${event.getStartDate().toLocalDate()}"></div>
+                                    <div class="col-12" th:text="${event.getStartDate().toLocalTime()}"></div>
+                                </div>
+                                <div class="col-2">
+                                    <div class="col-12" th:text="${event.getEndDate().toLocalDate()}"></div>
+                                    <div class="col-12" th:text="${event.getEndDate().toLocalTime()}"></div>
+                                </div>
+                                <div class="col-2"
+                                     th:text="${event.getGroup()!=null? event.getGroup().getName() : '-------'}"></div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="upcomming" role="tabpanel" aria-labelledby="upcomming-tab">
+                        <div class="row col-12 list-container">
+                            <th:block th:replace="fragments :: eventlistHeader" th:remove="tag"></th:block>
+                            <div th:each="event : ${upcomming_events}" class="row col-12 list-row">
+                                <div class="row col-12">
+                                    <div class="col-4">
+                                        <a th:href="@{'/event/details/'+ ${event.getId()}}"
+                                           th:text="${event.getName()}"></a>
+                                    </div>
+                                    <div class="col-2" th:text="${event.getPlaceName()}"></div>
+                                    <div class="col-2">
+                                        <div th:text="${event.getStartDate().toLocalDate()}"></div>
+                                        <div th:text="${event.getStartDate().toLocalTime()}"></div>
+                                    </div>
+                                    <div class="col-2">
+                                        <div th:text="${event.getEndDate().toLocalDate()}"></div>
+                                        <div th:text="${event.getEndDate().toLocalTime()}"></div>
+                                    </div>
+                                    <div class="col-2"
+                                         th:text="${event.getGroup()!=null? event.getGroup().getName() : '-------'}"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="past" role="tabpanel" aria-labelledby="past-tab">
+                        <div class="row col-12 list-container">
+                            <th:block th:replace="fragments :: eventlistHeader" th:remove="tag"></th:block>
+                            <div th:each="event : ${past_events}" class="row col-12 list-row">
+                                <div class="row col-12">
+                                    <div class="col-4">
+                                        <a th:href="@{'/event/details/'+ ${event.getId()}}"
+                                           th:text="${event.getName()}"></a>
+                                    </div>
+                                    <div class="col-2" th:text="${event.getPlaceName()}"></div>
+                                    <div class="col-2">
+                                        <div th:text="${event.getStartDate().toLocalDate()}"></div>
+                                        <div th:text="${event.getStartDate().toLocalTime()}"></div>
+                                    </div>
+                                    <div class="col-2">
+                                        <div th:text="${event.getEndDate().toLocalDate()}"></div>
+                                        <div th:text="${event.getEndDate().toLocalTime()}"></div>
+                                    </div>
+                                    <div class="col-2"
+                                         th:text="${event.getGroup()!=null? event.getGroup().getName() : '-------'}"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+<br>
+<br>
+        <div class="card">
+            <div class="card-header"> <h3>Groups</h3></div>
+            <div class="card-body">
+                <div class="row col-12 list-header-row">
+                    <div class="col-6"> Name</div>
+                    <div class="col-3"> Manager</div>
+                    <div class="col-3"> Members</div>
+                </div>
+                <div class="row col-12 list-row" th:each="group : ${groups_member}">
+                    <div class="col-6">
+                        <a th:href="@{'/group/details/' + ${group.getId()}}" th:text="${group.getName()}"></a>
+                    </div>
+                    <div class="col-3" th:text="${group.getGroupManager().getUsername()}"></div>
+                    <div class="col-3" th:text="${group.numberOfMembers()}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<th:block th:replace="fragments :: footer" th:remove="tag"></th:block>
+<th:block th:replace="fragments :: jsScripts" th:remove="tag"></th:block>
+</body>
+</html>

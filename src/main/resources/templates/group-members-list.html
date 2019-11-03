@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <th:block th:replace="fragments :: styleLinks" th:remove="tag"></th:block>
+    <meta charset="UTF-8">
+    <title>Members</title>
+</head>
+<body>
+<th:block th:replace="fragments :: navigator" th:remove="tag"></th:block>
+
+
+<div class="content-container">
+    <div class="container">
+        <div class="row col-12">
+            <div class="row col-12">
+                <h1 th:text="'Members of '+ ${group.getName()}"></h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content-container">
+
+    <div class="row col-12 list-header-row">
+        <div class="col-3"> Username</div>
+    </div>
+
+    <div th:each="member : ${memberships}">
+        <div class="row col-12 list-row">
+            <div class="col-6" th:text="${member.getAccount().getUsername()}"></div>
+            <div class="col-3" th:if="${!group.getGroupManager().equals(member.getAccount())}">
+                <a th:href="@{'/invitation/ignore/group/' + ${member.getId()}}">
+                    <button class="btn btn-outline-danger"> Remove
+                    </button>
+                </a>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<th:block th:replace="fragments :: footer" th:remove="tag"></th:block>
+<th:block th:replace="fragments :: jsScripts" th:remove="tag"></th:block>
+</body>
+</html>

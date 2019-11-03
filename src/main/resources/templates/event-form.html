@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <th:block th:replace="fragments :: styleLinks" th:remove="tag"></th:block>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<th:block th:replace="fragments :: navigator" th:remove="tag"></th:block>
+
+<form th:action="@{/event/add}" method="post" th:object="${event_to_edit}">
+    <div class="content-container">
+        <div class="container">
+            <div class="row col-12">
+                <div class="row col-12">
+                    <h1>Event form</h1>
+                </div>
+                <div th:if="${errorMessage != null}" class="row col-12">
+                    <div class="alert alert-danger col-12" role="alert">
+                        <p th:text="${errorMessage}"></p>
+                    </div>
+                </div>
+                <input type="hidden" th:field="*{id}" th:value="*{id}">
+                <input type="hidden" th:field="*{eventOrganizer}" th:value="*{eventOrganizer}">
+                <input type="hidden" th:field="*{locked}" th:value="*{locked}">
+                <input type="hidden" th:field="*{additionTime}" th:value="*{additionTime}">
+
+
+                <div class="row col-12">
+                    <div class="col-6">
+                        <label for="name">Name:</label>
+                    </div>
+                    <div class="col-6">
+                        <input class="form-control" id="name" type="text" th:field="*{name}" th:value="*{name}">
+                    </div>
+                </div>
+                <div class="row col-12">
+                    <div class="col-6">
+                        <label for="start-date">Start:</label>
+                    </div>
+                    <div class="col-6">
+                        <input class="form-control" id="start-date" type="datetime-local" th:field="*{startDate}" th:value="*{startDate}" >
+                    </div>
+                </div>
+                <div class="row col-12">
+                    <div class="col-6">
+                        <label for="end-date">End:</label>
+                    </div>
+                    <div class="col-6">
+                        <input class="form-control" id="end-date" type="datetime-local" th:field="*{endDate}" th:value="*{endDate}" >
+                    </div>
+                </div>
+                <div class="row col-12">
+                    <div class="col-6">
+                        <label for="place">Place:</label>
+                    </div>
+                    <div class="col-6">
+                        <input class="form-control" id="place" type="text" th:field="*{placeName}" th:value="*{placeName}">
+                    </div>
+                </div>
+
+                <div class="row col-12">
+                    <div class="col-6">
+                        <label for="place-adress">Adress:</label>
+                    </div>
+                    <div class="col-6">
+                        <input class="form-control" id="place-adress" type="text" th:field="*{placeAdress}" th:value="*{placeAdress}">
+                    </div>
+                </div>
+
+                <div class="row col-12">
+                    <div class="col-6">
+                        <label for="description">Description:</label>
+                    </div>
+                    <div class="col-6">
+                        <input class="form-control" id="description" type="text" th:field="*{description}" th:value="*{description}">
+                    </div>
+                </div>
+
+                <div class="row col-12">
+                    <div class="col-6">
+                        <label for="private">Private:</label>
+                    </div>
+                    <div class="col-6">
+                        <input class="form-control" id="private" type="checkbox" th:field="*{privateEvent}" th:value="*{privateEvent}"
+                        th:checked="${event_to_edit.isPrivateEvent()}">
+                    </div>
+                </div>
+                <div class="row col-12">
+                    <div class="col-6">
+                        <label for="group">Group:</label>
+                    </div>
+                    <div class="col-6">
+                        <select id="group" class="form-control" th:name="groupId">
+                            <option th:each="gro : ${group_mangment}"
+                            th:text="${gro.getName()}"
+                            th:value="${gro.getId()}"
+                            th:selected="${event_to_edit.getGroup()!=null && gro.getId()==event_to_edit.getGroup().getId()}">
+
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row col-12">
+                    <div class="col-6">
+                    </div>
+                    <div class="col-6">
+                        <input class="form-control" type="submit">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<th:block th:replace="fragments :: footer" th:remove="tag"></th:block>
+<th:block th:replace="fragments :: jsScripts" th:remove="tag"></th:block>
+</body>
+</html>

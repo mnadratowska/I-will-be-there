@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <th:block th:replace="fragments :: styleLinks" th:remove="tag"></th:block>
+    <meta charset="UTF-8">
+    <title>Account</title>
+</head>
+<body>
+<th:block th:replace="fragments :: navigator" th:remove="tag"></th:block>
+
+<div class="container">
+
+    <h1 th:text="${account.getUsername()}"></h1>
+
+
+    <div class="list-container">
+        <div class="list-row row col-6 offset-3">
+            <div class="col-6"> E-mail:</div>
+            <div class="col-6" th:text="${account.getEmail()}"></div>
+        </div>
+        <div class="list-row row col-6 offset-3">
+            <div class="col-6"> Account since:</div>
+            <div class="col-6" th:text="${account.getAdditionTime().toLocalDate()}"></div>
+        </div>
+        <div class="list-row row col-6 offset-3">
+            <div class="col-6"> Password:</div>
+            <div class="col-6">
+                <a th:href="@{/account/changePassword}">
+                    <button class="btn btn-outline-primary">Change password</button>
+                </a>
+            </div>
+        </div>
+        <div class="list-row row col-6 offset-3">
+            <div class="col-6"> My joins:</div>
+            <div class="col-6">
+                <a th:href="@{/event/list/joins}">
+                    <button class="btn btn-outline-primary"
+                            th:text="${account.getParticipations().size()} + ' events'"></button>
+                </a>
+            </div>
+        </div>
+        <div class="list-row row col-6 offset-3">
+            <div class="col-6"> My events:</div>
+            <div class="col-6">
+                <a th:href="@{/event/list/my}">
+                    <button class="btn btn-outline-primary"
+                            th:text="${account.getEvents().size() + ' events'}"></button>
+                </a>
+            </div>
+        </div>
+
+        <div class="list-row row col-6 offset-3">
+            <div class="col-6">
+                <a th:href="@{/account/edit}">
+                    <button class="btn btn-outline-primary">Edit account</button>
+                </a>
+            </div>
+            <div class="col-6">
+                <a th:href="@{/account/delete}">
+                    <button class="btn btn-outline-danger">Delete account</button>
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+<th:block th:replace="fragments :: footer" th:remove="tag"></th:block>
+<th:block th:replace="fragments :: jsScripts" th:remove="tag"></th:block>
+</body>
+</html>

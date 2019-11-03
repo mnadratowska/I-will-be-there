@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <th:block th:replace="fragments :: styleLinks" th:remove="tag"></th:block>
+    <meta charset="UTF-8">
+    <title>Manage groups</title>
+</head>
+<body>
+<th:block th:replace="fragments :: navigator" th:remove="tag"></th:block>
+
+<div class="content-container">
+    <div class="row col-12">
+        <div class="col-9"><h1>Group manager list</h1></div>
+        <div class="col-3">
+            <a th:href="@{/group/add}">
+                <button class="btn btn-outline-primary">New group</button>
+            </a>
+        </div>
+    </div>
+
+
+
+</div>
+
+    <div class="content-container">
+        <div class="row col-md-12 list-header-row">
+            <div class="col-3">Name</div>
+            <div class="col-2">Active events</div>
+            <div class="col-2">Members</div>
+            <div class="col-5"><!--Buttons--></div>
+        </div>
+        <div th:each="group : ${groups}" class="row col-12 list-row">
+            <div class="col-3" >
+                <a th:href="@{'/group/details/' + ${group.getId()}}" th:text="${group.getName()}"></a>
+            </div>
+            <div class="col-2" th:text="${group.getEventsByActive(true).size()}"></div>
+            <div class="col-2" th:text="${group.numberOfMembers()}"></div>
+            <div class="row col-5">
+
+                <div class="col-3">
+                <a th:href="@{'/invitation/invite/group/' + ${group.getId()}}">
+                    <button type="button" class="btn btn-outline-success col-12" > Invite
+                    </button>
+                </a>
+            </div>
+                <div class="col-3">
+                    <a th:href="@{'/group/members/' + ${group.getId()}}">
+                        <button type="button" class="btn btn-outline-success col-12"> Members
+                        </button>
+                    </a>
+                </div>
+
+                <div class="col-3">
+                    <a th:href="@{'/group/edit/' + ${group.getId()}}">
+                        <button type="button" class="btn btn-outline-primary col-12">Edit
+                        </button>
+                    </a>
+                </div>
+
+                <div class="col-3">
+                    <a th:href="@{'/group/delete/' + ${group.getId()}}">
+                        <button type="button" class="btn btn-outline-danger col-12"> Remove </button>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+<th:block th:replace="fragments :: footer" th:remove="tag"></th:block>
+<th:block th:replace="fragments :: jsScripts" th:remove="tag"></th:block>
+</body>
+</html>

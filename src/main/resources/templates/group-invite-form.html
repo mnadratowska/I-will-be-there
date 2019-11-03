@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <th:block th:replace="fragments :: styleLinks" th:remove="tag"></th:block>
+    <meta charset="UTF-8">
+    <title>Invite</title>
+</head>
+<body>
+<th:block th:replace="fragments :: navigator" th:remove="tag"></th:block>
+
+
+<div class="content-container">
+    <div class="container">
+        <div class="row col-12">
+            <div class="row col-12">
+                <h1 th:text="'Invite for group '+ ${group.getName()}"></h1>
+            </div>
+        </div>
+
+        <form th:action="@{'/invitation/invite/group/' + ${group.getId()} +'/search'}" method="post">
+            <div class="row col-6">
+                <div class="col-8">
+                    <input class="form-control" id="search" type="text" name="uname"
+                           placeholder="Search by username..." th:value="${user_name}">
+                </div>
+                <div class="col-4">
+                    <input class="form-control" type="submit">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="content-container">
+
+    <div class="row col-12 list-header-row">
+        <div class="col-3"> Username</div>
+    </div>
+
+    <div th:each="account : ${accounts}">
+        <div th:if="${!group.getGroupManager().equals(account)}" class="row col-12 list-row">
+            <div class="col-6" th:text="${account.getUsername()}"></div>
+            <div class="col-3">
+                <a th:href="@{/invitation/invite/group(id=${group.getId()},username=${account.getUsername()} )}">
+                    <button class="btn btn-outline-success"
+                            th:disabled="${group.hasInvitation(account.getUsername())}"> Invite
+                    </button>
+                </a>
+            </div>
+            <div class="col-3">
+                <a th:href="@{/invitation/cancel/group(id=${group.getId()},username=${account.getUsername()} )}">
+                    <button class="btn btn-outline-danger" th:disabled="${!group.hasInvitation(account.getUsername())}"> Cancel
+                    </button>
+                </a>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<th:block th:replace="fragments :: footer" th:remove="tag"></th:block>
+<th:block th:replace="fragments :: jsScripts" th:remove="tag"></th:block>
+</body>
+</html>

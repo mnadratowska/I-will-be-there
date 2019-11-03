@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <th:block th:replace="fragments :: styleLinks" th:remove="tag"></th:block>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<th:block th:replace="fragments :: navigator" th:remove="tag"></th:block>
+
+<div class="content-container">
+    <h1>Invitation list</h1>
+
+    <div class="row col-md-12">
+        <div class="row col-md-12 list-header-row">
+            <div class="col-3">Name</div>
+            <div class="col-3">Start date</div>
+            <div class="col-3">Place</div>
+            <div class="col-3"><!--Buttons--></div>
+        </div>
+        <div th:each="invitation : ${invitations}" class="row col-md-12 list-data-row">
+            <div class="col-3" th:text="${invitation.getEvent().getName()}"></div>
+            <div class="col-3" th:text="${invitation.getEvent().getStartDate()}"></div>
+            <div class="col-3" th:text="${invitation.getEvent().getPlaceName()}"></div>
+            <div class="row col-3">
+
+
+                <div class="col-4">
+                    <a th:href="@{'/event/details/' + ${invitation.getEvent().getId()}}">
+                        <button type="button" class="btn btn-outline-primary">Details
+                        </button>
+                    </a>
+                </div>
+
+                <div class="col-4">
+                <a th:href="@{'/event/join/' + ${invitation.getEvent().getId()}}">
+                    <button type="button" class="btn btn-outline-success"> Join
+                    </button>
+                </a>
+            </div>
+                <div class="col-4">
+                    <a th:href="@{'/invitation/ignore/event/' + ${invitation.getId()}}">
+                        <button type="button" class="btn btn-outline-danger"> Ignore
+                        </button>
+                    </a>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<th:block th:replace="fragments :: footer" th:remove="tag"></th:block>
+<th:block th:replace="fragments :: jsScripts" th:remove="tag"></th:block>
+</body>
+</html>
